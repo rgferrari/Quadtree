@@ -14,10 +14,10 @@ class Rectangle():
         self.h = h
 
     def contains(self, point):
-        return (point.x < self.x + self.w and
-                point.x > self.x - self.w and
-                point.y < self.y + self.h and
-                point.y > self.y - self.h)
+        return (point.x <= self.x + self.w and
+                point.x >= self.x - self.w and
+                point.y <= self.y + self.h and
+                point.y >= self.y - self.h)
 
 class QuadTree():
     def __init__(self, boundary, capacity):
@@ -46,19 +46,25 @@ class QuadTree():
 
     def insert(self, point):
         if(not self.boundary.contains(point)):
-            return
+            return False
 
         if(len(self.points) < self.capacity):
             self.points.append(point)
+            return True
+
         else:
             if(not self.is_divided):
                 self.subdivide()
                 self.is_divided = True
 
-            self.northwest.insert(point)
-            self.northeast.insert(point)
-            self.southwest.insert(point)
-            self.southeast.insert(point)
+            if (self.northwest.insert(point)):
+                return True
+            elif (self.northeast.insert(point)):
+                return True
+            elif (self.southwest.insert(point)):
+                return True
+            elif (self.southeast.insert(point)):
+                return True
 
     def draw(self):
         x = [self.boundary.x - self.boundary.w, self.boundary.x + self.boundary.w] 
